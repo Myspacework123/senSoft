@@ -20,6 +20,8 @@ session_start();
     <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
+
     <link href="vista/css/main.css" rel="stylesheet" type="text/css" media="screen">
     <script src="vista/js/main.js"></script>
 </head>
