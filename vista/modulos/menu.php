@@ -80,32 +80,34 @@
     </div>      
 </div>
 
-
+<!-- contenedero tablero -->
 
 <div id="services" style="display:none" class="m-0 vh-100 justify-content-center align-items-center p-0" >
    <div class="row p-1  text-center" id="navOculto">
-        <h2 class="col-10"><strong>Siigo Match Battle</strong></h2>
         
     </div>
+
 </br>   
     <div class="row contenedorJugadores">
-
+      <div class="spinner-border text-center" role="status" id="c">
+          <span class="visually-hidden">Loading...</span>
+      </div>
     </div>
 </div>
-
+<!-- plantilla jugador -->
 <div id="plantillaJugador" class="card mb-3" style="max-width: 12rem; display:none">
   <div class="row g-0">
     <div class="col-md-2 mt-2">
       <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="img-fluid rounded-start" alt="...">
     </div>
     <div class="col-md-10">
-      <div class="card-body">
+      <div class="card-body" id="CuerpoCarta">
         <h5 class="card-title " id="Nombre"></h5>
       </div>
     </div>
   </div>
 </div>
-
+<!-- plantilla cartas -->
 <div id="plantillaCarta" class="card" style="width: 10rem; display:none" >
       <img src="https://cdn.hobbyconsolas.com/sites/navi.axelspringer.es/public/styles/980px/public/media/image/2019/01/Mortal%20Kombat%2011%20Shaggy.jpg?itok=v58FHT3H" class="card-img-top" alt="...">
       <div class="card-body">
@@ -121,7 +123,7 @@
     </div>
   </div>
 
-<!-- Modal -->
+<!-- Modal COnfiguracion partida-->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -164,6 +166,45 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Modal Jugador 1-->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel"></h5>
+      </div>
+      <div class="modal-body text-center">
+        <button type="button" class="btn btn-secondary" id="btnSalir">Salir</button>
+        <button type="button" class="btn btn-primary" id="btnInciarPartida">Inciar partida</button>
+      </div>
+      <div class="modal-footer">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal espera-->
+<div class="modal fade" id="modalEspera" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel"></h5>
+        
+      </div>
+      <div class="modal-body text-center">
+        <h1>Esperando a que inicie la partida</h1>
+      </div>
+      <div class="modal-footer">
+        
       </div>
     </div>
   </div>

@@ -131,6 +131,13 @@ class PartidaModelo{
         $objRespuesta = null;
         return $datosJugadores;
     }
+    public static function mdlListarCartas(){
+        $objRespuesta = Conexion::conectar()->prepare("SELECT * FROM carta ");
+        $objRespuesta->execute();
+        $datosCartas = $objRespuesta->fetchAll();
+        $objRespuesta = null;
+        return $datosCartas;
+    }
 
 
 }

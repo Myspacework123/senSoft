@@ -1,8 +1,49 @@
 $(document).ready(function() {
 
     var ws;
+    var numeroJugadores = 0;
+    localStorage.setItem('a', '0');
 
-    function IniciarConexion(codigo, maximoJugadores) {
+    conectar()
+    reconectar();
+    // funciones para reconectar partida
+    function reconectar() {
+        let reconectar = localStorage.getItem('restore');
+        if (reconectar == "true") {
+            $("#menu").html('<button type="button" class="btn btn-primary col-2 m-5" id="btnReconectar">Volver a la partida</button><button type="button" class="btn btn-danger col-1" id="btnDesconectar"><i class="fa fa-sign"> Salir</i></button> ');
+        } else {
+
+        }
+    }
+
+    function conectar() {
+        var idJugador = 8;
+        let conectar = localStorage.getItem('codigo');
+        let idPartida = localStorage.getItem('idPartida');
+        if (conectar != null && idPartida != null) {
+            IniciarConexion(conectar);
+            cargarJugadores(idPartida, idJugador);
+        } else {
+
+        }
+    }
+
+    $("#btnReconectar").click(function() {
+        $("#contenedorCrear").hide();
+        $("#contenedorUnirse").hide();
+        $("#btnReconectar").hide();
+        $("#btnDesconectar").hide();
+        $("#services").show(10);
+    })
+
+    $("#btnDesconectar").click(function() {
+        localStorage.removeItem('restore');
+        localStorage.removeItem('codigo');
+        localStorage.removeItem('idPartida');
+        location = "menu";
+    })
+
+    function IniciarConexion(codigo, maximoJugadores, tiempoPartida) {
         ws = new WebSocket("ws://achex.ca:4010");
 
         ws.onopen = function() {
@@ -10,20 +51,34 @@ $(document).ready(function() {
             console.log('ws.readyState: ' + ws.readyState);
         }
         ws.onmessage = function(Mensajes) {
+            var jugadores = 0;
             var MensajesObtenidos = Mensajes.data;
             var objeto = JSON.parse(MensajesObtenidos);
-            console.log(codigo);
-            console.log(objeto.nombre);
 
             if (objeto.nombre != null) {
+                localStorage.setItem('restore', 'true');
+                localStorage.setItem('codigo', codigo);
+                localStorage.setItem('idPartida', objeto.idJugador);
+
+                jugadores = 1 + jugadores;
+                console.log("jugadores" + jugadores);
+                console.log(objeto.jugador);
+                $("#c").hide();
                 $("#plantillaJugador").clone().appendTo(".contenedorJugadores");
                 $(".contenedorJugadores #plantillaJugador").show(10);
                 $(".contenedorJugadores #plantillaJugador #Nombre").html('<strong>' + objeto.nombre + '</strong> ');
                 $(".contenedorJugadores #plantillaJugador").attr("id", "");
-
                 if (objeto.jugador == 1) {
-                    $("#navOculto").html('<h2 class="col-11"><strong>Siigo Match Battle</strong></h2><button type="button" class="btn btn-otuline-primary col-1" id="btnCerrarPartida">Cerrar</button>');
+                    $("#navOculto").html('<div class="alert alert-secondary col-1" role="alert">00:00</div>' +
+                        '<h2 class="col-10"><strong>Siigo Match Battle</strong></h2><button type="button" class="btn btn-outline-danger col-1" id="btnCerrarPartida">Cerrar</button>');
+
+                    $("#staticBackdrop").modal('show');
+                    localStorage.setItem('a', '1');
                 }
+
+
+
+
             }
 
         }
@@ -34,12 +89,44 @@ $(document).ready(function() {
         var a = "ok";
         return a;
     }
+    //Iniciar Partida
+    $("#btnInciarPartida").click(function() {
+        $("#staticBackdrop").modal('hide');
+        $("#modalEspera").modal('hide');
+        iniciarPartida();
+    })
 
+    function iniciarPartida() {
+
+
+        var objData = new FormData();
+        objData.append("cartas", "ok");
+        $.ajax({
+            url: "control/partidaControl.php",
+            type: "post",
+            dataType: "json",
+            data: objData,
+            cache: false,
+            contentType: false,
+            processData: false
+        }).done(function(respuesta) {
+            alert("a");
+        });
+    }
+
+    //Crear partida funcion
     function crearPartida(codigo, nombre, numeroJugador) {
+        if (ws.readyState == 1) {
+            setTimeout(function() {
+                ws.send('{"to":"' + codigo + '","nombre":"' + nombre + '","jugador":"' + numeroJugador + '"}')
+            }, 1000);
+        } else {
+            setTimeout(function() {
+                crearPartida(codigo, nombre, numeroJugador);
+            }, 1000);
 
-        setTimeout(function() {
-            ws.send('{"to":"' + codigo + '","nombre":"' + nombre + '","jugador":"' + numeroJugador + '"}')
-        }, 500);
+        }
+
     }
 
 
@@ -184,8 +271,8 @@ $(document).ready(function() {
                     $("#contenedorCrear").hide();
                     $("#contenedorUnirse").hide();
                     $("#services").show(10);
-
-                    IniciarConexion(codigo, maxJuagdores);
+                    localStorage.setItem('numeroJugador', res["numeroJugador"]);
+                    IniciarConexion(codigo, maxJuagdores, tiempoPartida);
                     crearPartida(codigo, res["nombre"], res["numeroJugador"]);
 
                 } else {
@@ -233,10 +320,14 @@ $(document).ready(function() {
                         $("#contenedorCrear").hide();
                         $("#contenedorUnirse").hide();
                         $("#services").show(10);
+                        localStorage.setItem('numeroJugador', res["numeroJugador"]);
                         cargarJugadores(res["idPartida"], res["idJugador"]);
                         IniciarConexion(codigo)
                         jugadorUnion(codigo, res["nombre"], res["numeroJugador"]);
-
+                        if (res["numeroJugador"] >= 2) {
+                            $("#modalEspera").modal('show');
+                            localStorage.setItem('a', '1');
+                        }
 
 
                     }
@@ -251,12 +342,19 @@ $(document).ready(function() {
     })
 
     function jugadorUnion(codigo, nombre, numeroJugador) {
-        setTimeout(function() {
-            ws.send('{"to":"' + codigo + '","nombre":"' + nombre + '","jugador":"' + numeroJugador + '"}')
-        }, 300);
+        if (ws.readyState == 1) {
+            setTimeout(function() {
+                ws.send('{"to":"' + codigo + '","nombre":"' + nombre + '","jugador":"' + numeroJugador + '"}')
+            }, 1000);
+        } else {
+            setTimeout(function() {
+                crearPartida(codigo, nombre, numeroJugador);
+            }, 1000);
+
+        }
     }
 
-    function cargarJugadores(idPartida, id) {
+    function cargarJugadores(idPartida, idJugador) {
         var objData = new FormData();
         objData.append("codigoPartidaUnirse", idPartida);
         $.ajax({
@@ -271,24 +369,11 @@ $(document).ready(function() {
             if (respuesta != null) {
 
                 var interface = '';
-                respuesta.forEach(cargarDatos());
+                console.log(respuesta);
+                respuesta.forEach(cargarJugadores());
 
-
-                function cargarDatos(item, index) {
-                    if (item.idJugador != id) {
-                        interface += '    <div id="plantillaJugador" class="card mb-3" style="max-width: 12rem; display:none">';
-                        interface += '    <div class="row g-0">';
-                        interface += '    <div class="col-md-2 mt-2">';
-                        interface += '    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="img-fluid rounded-start" alt="...">';
-                        interface += '    </div>';
-                        interface += '    <div class="col-md-10">';
-                        interface += '    <div class="card-body">';
-                        interface += '    <h5 class="card-title " id="Nombre">' + item.nombre + '</h5>';
-                        interface += '    </div>';
-                        interface += '    </div>';
-                        interface += '    </div>';
-                        interface += '    </div>';
-                    }
+                function cargarJugadores(elemento, index) {
+                    console.log(elemento, index);
                 }
                 $(".contenedorJugadores").html(interface);
             } else {

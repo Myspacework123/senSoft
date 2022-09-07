@@ -26,6 +26,10 @@ class PartidaControl{
         echo json_encode($objRespuesta);
     }
 
+    public function ctrListarCartas(){
+        $objRespuesta = PartidaModelo::mdlListarCartas();
+        echo json_encode($objRespuesta);
+    }
 }
 
 if (isset($_POST["codigoPartida"],$_POST["usuario"],$_POST["tiempoPartida"],$_POST["tiempoTurno"],$_POST["tipoPartida"],$_POST["maximoJugadores"])){
@@ -50,4 +54,9 @@ if (isset($_POST["codigoPartidaUnirse"])){
     $objPartida = new PartidaControl();
     $objPartida->idPartida = $_POST["codigoPartidaUnirse"];
     $objPartida->ctrListar();
+}
+
+if (isset($_POST["cartas"])){
+    $objPartida = new PartidaControl();
+    $objPartida->ctrListarCartas();
 }
