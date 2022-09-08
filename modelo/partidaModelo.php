@@ -40,7 +40,7 @@ class PartidaModelo{
                         //insertamos jugador 1
                         $idPartida = $datosPartida["idPartida"];
                         $objRespuesta = Conexion::conectar()->prepare("INSERT INTO jugador(nombre, numerojugador,idPartida)VALUES(:nombre,:jugador,:partida)");
-                        $objRespuesta->bindParam(":nombre",$usuario);
+                         $objRespuesta->bindParam(":nombre",$usuario);
                         $objRespuesta->bindParam(":jugador",$numeroJugador);
                         $objRespuesta->bindParam(":partida",$idPartida);
                         if($objRespuesta->execute()){
@@ -125,19 +125,68 @@ class PartidaModelo{
 
     public static function mdlListar($idPartida){
         $objRespuesta = Conexion::conectar()->prepare("SELECT * FROM jugador WHERE idPartida = :partida ");
-        $objRespuesta->bindParam("partida",$idPartida);
+        $objRespuesta->bindParam(":partida",$idPartida);
         $objRespuesta->execute();
         $datosJugadores = $objRespuesta->fetchAll();
         $objRespuesta = null;
         return $datosJugadores;
     }
-    public static function mdlListarCartas(){
-        $objRespuesta = Conexion::conectar()->prepare("SELECT * FROM carta ");
-        $objRespuesta->execute();
-        $datosCartas = $objRespuesta->fetchAll();
-        $objRespuesta = null;
-        return $datosCartas;
+    
+    public static function mdlListarCartas($idJugador,$datosCartas, $idPartida){
+        try{
+        $estado = false;
+        $usados = [];
+        $objRespuesta = Conexion::conectar()->prepare("UPDATE partida SET estado= :estado where idPartida = :partida");
+        $objRespuesta->bindParam(":estado",$estado);
+        $objRespuesta->bindParam(":partida",$idPartida);
+        if($objRespuesta->execute()){
+            $aleatorio = mt_rand(1,32);
+            for($x=1; $x < $datosCartas; $x=$x+1){
+                $aleatorio = mt_rand(1,32);
+                while(in_array($aleatorio,$usados)) {
+                    $aleatorio = mt_rand(1, 32);
+                }
+                $objRespuesta = Conexion::conectar()->prepare("SELECT * FROM  jugadorcarta join jugador on jugadorcarta.idJugador=jugador.idJugador join partida on jugador.idPartida=partida.idPartida where jugadorcarta.idCarta=:idCarta and jugador.idPartida=:idPartida");
+                $objRespuesta->bindParam(":idCarta",$aleatorio);
+                $objRespuesta->bindParam(":idPartida",$idPartida);
+                $objRespuesta->execute();
+                $datos = $objRespuesta->fetch();
+                $objRespuesta = null;
+                if($datos != null){
+                    $x=$x-1;
+                }else {
+                    $objRespuesta = Conexion::conectar()->prepare("INSERT INTO jugadorcarta (idJugador, idCarta)VALUES(:idJugador,:idCarta)");
+                    $objRespuesta->bindParam(":idJugador",$idJugador);
+                    $objRespuesta->bindParam(":idCarta",$aleatorio);
+                    $objRespuesta->execute();
+                    $usados[] = $aleatorio;
+                    $objRespuesta = null;
+                }     
+            }     
+        }
+            $objRespuesta = Conexion::conectar()->prepare("SELECT * FROM  carta join jugadorcarta on carta.idCarta = jugadorcarta.idCarta where jugadorcarta.idJugador=:idJugador ");
+            $objRespuesta->bindParam(":idJugador",$idJugador);
+            $objRespuesta->execute();
+            $cartasDatos = $objRespuesta->fetchAll();
+
+            if($cartasDatos != null){
+                $objRespuesta=null;
+                $mensaje= $cartasDatos;
+            }  
+    }catch(Exception $th){
+
+    }
+       
+        return $mensaje;
     }
 
 
 }
+
+        //    $objRespuesta = Conexion::conectar()->prepare("SELECT idCarta, nombre, prioridad, codigo, fuerza, agilidad, estamina, velocidad, estrategia FROM carta ");
+        //     $objRespuesta->execute();
+        //     $datosCartas = $objRespuesta->fetchAll();       
+        //     $objRespuesta = null;
+        //     if($datosCartas!=null){
+
+        //     }

@@ -80,9 +80,31 @@
     </div>      
 </div>
 
+
+<div id="reconectar" class="m-0 vh-100 row justify-content-center align-items-center " style="display:none">
+    <div class="col-6  text-center shadow bg-body p-0 text-black">
+            <form class="p-0">
+                <div class="bg-primary p-4 text-white">
+                  <h3 class="form-title"><strong>Reconectar</strong></h3>
+                  
+                  
+                </div>
+                <div class="row p-5 ">
+                  <div class="col-6 ">
+                    <button id="btnReconectar"type="button" class="btn btn-danger" >Reconectar</button>
+                    <button id="btnDesconectar" type="button" class="btn btn-danger" >Salir</button>
+                  </div>
+                  <div class="col-6 ">
+
+                  </div>                  
+                </div>            
+            </form>          
+    </div> 
+</div>
 <!-- contenedero tablero -->
 
 <div id="services" style="display:none" class="m-0 vh-100 justify-content-center align-items-center p-0" >
+<span id="time" class="alert alert-secondary col-1">00:00:00</span>
    <div class="row p-1  text-center" id="navOculto">
         
     </div>
@@ -101,7 +123,7 @@
       <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="img-fluid rounded-start" alt="...">
     </div>
     <div class="col-md-10">
-      <div class="card-body" id="CuerpoCarta">
+      <div class="card-body" id="CuerpoCarta" numeroJugador="">
         <h5 class="card-title " id="Nombre"></h5>
       </div>
     </div>
@@ -109,21 +131,18 @@
 </div>
 <!-- plantilla cartas -->
 <div id="plantillaCarta" class="card" style="width: 10rem; display:none" >
-      <img src="https://cdn.hobbyconsolas.com/sites/navi.axelspringer.es/public/styles/980px/public/media/image/2019/01/Mortal%20Kombat%2011%20Shaggy.jpg?itok=v58FHT3H" class="card-img-top" alt="...">
+      <img src="" class="card-img-top" alt="...">
       <div class="card-body">
-        <h5 class="card-title NombreJugador">Nombre</h5>
-    
-        <p class="card-text mb-0">...</p>
-        <p class="card-text mb-0">...</p>
-        <p class="card-text mb-0">...</p>
-        <p class="card-text mb-0">...</p>
-        <p class="card-text mb-0">...</p>
-
-
+        <h5 class="card-title NombreJugador"></h5>
+        <p class="card-text mb-0"></p>
+        <p class="card-text mb-0"></p>
+        <p class="card-text mb-0"></p>
+        <p class="card-text mb-0"></p>
+        <p class="card-text mb-0"></p>
     </div>
   </div>
 
-<!-- Modal COnfiguracion partida-->
+<!-- Modal Configuracion partida-->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -182,8 +201,8 @@
         <h5 class="modal-title" id="staticBackdropLabel"></h5>
       </div>
       <div class="modal-body text-center">
-        <button type="button" class="btn btn-secondary" id="btnSalir">Salir</button>
-        <button type="button" class="btn btn-primary" id="btnInciarPartida">Inciar partida</button>
+        <button type="button" class="btn btn-secondary" id="btnSalir" >Salir</button>
+        <button type="button" class="btn btn-primary" id="btnInciarPartida" idPartida="" disabled>Inciar partida</button>
       </div>
       <div class="modal-footer">
         
@@ -209,3 +228,26 @@
     </div>
   </div>
 </div>
+
+
+      <div class="initial" style="display:none;">
+            <form>
+                <input type="text" id="hour">
+                <span id="hourLabel">Hora</span>
+        
+                <input type="text" id="minute" value="">
+                <span id="minuteLabel">Minuto</span>
+        
+                <input type="text" id="second">
+                <span id="secondLabel">segundo</span>
+            </form>
+            
+            <button id="countup">Iniciar cronometraje</button>
+    
+            <button type="button" id="countdown">Iniciar cuenta regresiva</button>
+        </div>
+        
+        <span id="hint">Contando hacia atrás 12:20:00</span>
+
+
+        

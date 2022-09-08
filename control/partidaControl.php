@@ -9,6 +9,8 @@ class PartidaControl{
     public $tipoPartida;
     public $maxJugadores;
     public $idPartida;
+    public $cartasJugador;
+    public $idJugador;
 
     public function ctrCrearPartida(){
         $objRespuesta = PartidaModelo::mdlCrearPartida($this->codigoPartida,$this->usuario,$this->tiempoPartida,$this->tiempoTurno,$this->tipoPartida,$this->maxJugadores);
@@ -27,7 +29,7 @@ class PartidaControl{
     }
 
     public function ctrListarCartas(){
-        $objRespuesta = PartidaModelo::mdlListarCartas();
+        $objRespuesta = PartidaModelo::mdlListarCartas($this->idJugador,$this->cartasJugador,$this->idPartida);
         echo json_encode($objRespuesta);
     }
 }
@@ -50,13 +52,18 @@ if (isset($_POST["codigoUnirse"],$_POST["nombreUnirse"])){
     $objPartida->ctrUnirsePartida();
 }
 
-if (isset($_POST["codigoPartidaUnirse"])){
+if (isset($_POST["idPartida"])){
     $objPartida = new PartidaControl();
-    $objPartida->idPartida = $_POST["codigoPartidaUnirse"];
+    $objPartida->idPartida = $_POST["idPartida"];
     $objPartida->ctrListar();
 }
 
-if (isset($_POST["cartas"])){
+
+
+if (isset($_POST["idJugador"],$_POST["cartasJugador"],$_POST["idPartida"])){
     $objPartida = new PartidaControl();
+    $objPartida->idJugador = $_POST["idJugador"];
+    $objPartida->cartasJugador = $_POST["cartasJugador"];
+    $objPartida->idPartida = $_POST["idPartida"];
     $objPartida->ctrListarCartas();
 }
